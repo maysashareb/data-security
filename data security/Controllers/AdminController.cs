@@ -26,10 +26,8 @@ namespace data_security.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleAdmin(int id)
         {
-            // Get current user ID from claims
             var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
 
-            // Don't allow changing your own admin status
             if (id == currentUserId)
             {
                 TempData["ErrorMessage"] = "You cannot change your own admin status.";
@@ -57,10 +55,8 @@ namespace data_security.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            // Get current user ID from claims
             var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
 
-            // Don't allow deleting yourself
             if (id == currentUserId)
             {
                 TempData["ErrorMessage"] = "You cannot delete your own account.";

@@ -36,7 +36,6 @@ namespace data_security.Controllers
                     return View(model);
                 }
                 
-                // Create claims for the authenticated user
                 var claims = new[] {
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
@@ -54,7 +53,6 @@ namespace data_security.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
                 
-                // Redirect based on user role
                 if (user.IsAdmin)
                     return RedirectToAction("Index", "Admin");
                 else
@@ -104,8 +102,7 @@ namespace data_security.Controllers
                 
                 if (isVerified)
                 {
-                    // In a real application, send a reset link to the email
-                    // Here we'll just redirect to the reset password page
+                   
                     return RedirectToAction("ResetPassword", new { username = model.Username });
                 }
                 

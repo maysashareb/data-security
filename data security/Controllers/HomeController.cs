@@ -25,7 +25,7 @@ namespace data_security.Controllers
             return View();
         }
 
-        [Authorize] // Only authenticated users can access this action
+        [Authorize] 
         public IActionResult SecureArea()
         {
             return View();

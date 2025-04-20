@@ -37,11 +37,9 @@ namespace data_security.Services
 
         public async Task<bool> RegisterUserAsync(RegisterViewModel model)
         {
-            // Check if username already exists
             if (await _context.Users.AnyAsync(u => u.Username == model.Username))
                 return false;
 
-            // Check if there are any users in the database
             bool isFirstUser = !await _context.Users.AnyAsync();
 
             var user = new User

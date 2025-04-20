@@ -12,7 +12,7 @@ namespace data_security.Models
         public string Username { get; set; }
 
         [Required]
-        [StringLength(64)] // SHA-256 produces a 64-character string
+        [StringLength(64)] 
         public string PasswordHash { get; set; }
 
         [Required]
