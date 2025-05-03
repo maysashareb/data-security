@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using data_security.Data;
 
@@ -11,9 +12,11 @@ using data_security.Data;
 namespace data_security.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426112415_AddCreditCard")]
+    partial class AddCreditCard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,7 +229,7 @@ namespace data_security.Migrations
                         new
                         {
                             UserID = 2,
-                            CreatedAt = new DateTime(2025, 4, 19, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 26, 4, 24, 14, 609, DateTimeKind.Local).AddTicks(5445),
                             Email = "user1@example.com",
                             IsAdmin = false,
                             PasswordHash = "bc5848f227cc161eb5f68dfe98cb13110a9c843ce69e953a88107d865583d397",
@@ -235,7 +238,7 @@ namespace data_security.Migrations
                         new
                         {
                             UserID = 3,
-                            CreatedAt = new DateTime(2025, 4, 19, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 26, 4, 24, 14, 609, DateTimeKind.Local).AddTicks(5611),
                             Email = "user2@example.com",
                             IsAdmin = false,
                             PasswordHash = "bc5848f227cc161eb5f68dfe98cb13110a9c843ce69e953a88107d865583d397",
@@ -244,7 +247,7 @@ namespace data_security.Migrations
                         new
                         {
                             UserID = 4,
-                            CreatedAt = new DateTime(2025, 4, 19, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 26, 4, 24, 14, 609, DateTimeKind.Local).AddTicks(5635),
                             Email = "user3@example.com",
                             IsAdmin = false,
                             PasswordHash = "bc5848f227cc161eb5f68dfe98cb13110a9c843ce69e953a88107d865583d397",
@@ -253,7 +256,7 @@ namespace data_security.Migrations
                         new
                         {
                             UserID = 5,
-                            CreatedAt = new DateTime(2025, 4, 19, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 26, 4, 24, 14, 609, DateTimeKind.Local).AddTicks(5654),
                             Email = "user4@example.com",
                             IsAdmin = false,
                             PasswordHash = "bc5848f227cc161eb5f68dfe98cb13110a9c843ce69e953a88107d865583d397",
@@ -262,7 +265,7 @@ namespace data_security.Migrations
                         new
                         {
                             UserID = 6,
-                            CreatedAt = new DateTime(2025, 4, 19, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 26, 4, 24, 14, 609, DateTimeKind.Local).AddTicks(5685),
                             Email = "user5@example.com",
                             IsAdmin = false,
                             PasswordHash = "bc5848f227cc161eb5f68dfe98cb13110a9c843ce69e953a88107d865583d397",
@@ -271,7 +274,7 @@ namespace data_security.Migrations
                         new
                         {
                             UserID = 7,
-                            CreatedAt = new DateTime(2025, 4, 19, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 26, 4, 24, 14, 609, DateTimeKind.Local).AddTicks(5703),
                             Email = "user6@example.com",
                             IsAdmin = false,
                             PasswordHash = "bc5848f227cc161eb5f68dfe98cb13110a9c843ce69e953a88107d865583d397",
@@ -280,7 +283,7 @@ namespace data_security.Migrations
                         new
                         {
                             UserID = 8,
-                            CreatedAt = new DateTime(2025, 4, 19, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 26, 4, 24, 14, 609, DateTimeKind.Local).AddTicks(5720),
                             Email = "user7@example.com",
                             IsAdmin = false,
                             PasswordHash = "bc5848f227cc161eb5f68dfe98cb13110a9c843ce69e953a88107d865583d397",
@@ -289,7 +292,7 @@ namespace data_security.Migrations
                         new
                         {
                             UserID = 9,
-                            CreatedAt = new DateTime(2025, 4, 19, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 26, 4, 24, 14, 609, DateTimeKind.Local).AddTicks(5736),
                             Email = "user8@example.com",
                             IsAdmin = false,
                             PasswordHash = "bc5848f227cc161eb5f68dfe98cb13110a9c843ce69e953a88107d865583d397",
@@ -298,7 +301,7 @@ namespace data_security.Migrations
                         new
                         {
                             UserID = 10,
-                            CreatedAt = new DateTime(2025, 4, 19, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 26, 4, 24, 14, 609, DateTimeKind.Local).AddTicks(5755),
                             Email = "user9@example.com",
                             IsAdmin = false,
                             PasswordHash = "bc5848f227cc161eb5f68dfe98cb13110a9c843ce69e953a88107d865583d397",

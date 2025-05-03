@@ -5,10 +5,10 @@
 
 <style>
     :root {
-        --primary-color: #0078ff; 
-        --secondary-color: #ffde00; 
-        --accent-color: #ff4e50; 
-        --background-color: #001c40; 
+        --primary-color: #0078ff;
+        --secondary-color: #ffde00;
+        --accent-color: #ff4e50;
+        --background-color: #001c40;
         --text-color: #ffffff;
         --card-bg: rgba(255, 255, 255, 0.12);
         --input-bg: rgba(255, 255, 255, 0.08);
@@ -278,76 +278,61 @@
     }
 
     @@keyframes fadeIn {
-        0%
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
-    {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     @@keyframes fadeInUp {
-        0%
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
-    {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     @@keyframes shimmer {
-        0%
+        0% {
+            transform: translateX(-100%) rotate(45deg);
+        }
 
-    {
-        transform: translateX(-100%) rotate(45deg);
-    }
-
-    100% {
-        transform: translateX(100%) rotate(45deg);
-    }
-
+        100% {
+            transform: translateX(100%) rotate(45deg);
+        }
     }
 
     @@keyframes twinkle {
-        0%
+        0% {
+            opacity: 0;
+        }
 
-    {
-        opacity: 0;
-    }
+        50% {
+            opacity: 1;
+        }
 
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-
+        100% {
+            opacity: 0;
+        }
     }
 
     @@keyframes glow {
-        0%
+        0% {
+            text-shadow: 0 0 5px rgba(0, 120, 255, 0.5);
+        }
 
-    {
-        text-shadow: 0 0 5px rgba(0, 120, 255, 0.5);
-    }
-
-    100% {
-        text-shadow: 0 0 15px rgba(0, 120, 255, 0.8), 0 0 30px rgba(0, 120, 255, 0.6);
-    }
-
+        100% {
+            text-shadow: 0 0 15px rgba(0, 120, 255, 0.8), 0 0 30px rgba(0, 120, 255, 0.6);
+        }
     }
 </style>
 

@@ -19,9 +19,13 @@ namespace data_security.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = await _context.Users
+                .Include(u => u.CreditCard)
+                .ToListAsync();
+
             return View(users);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ToggleAdmin(int id)

@@ -1,24 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using data_security.Data;
 using data_security.Models;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace data_security.Services
 {
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
+        // Original secure authentication method
         public async Task<User> AuthenticateAsync(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
@@ -35,6 +41,99 @@ namespace data_security.Services
             return user;
         }
 
+        // VULNERABLE METHOD 1: SQL Injection through string concatenation
+        public async Task<User> AuthenticateWithSqlInjectionAsync(string username, string password)
+        {
+            if (string.IsNullOrEmpty(username))
+                return null;
+
+            string hashedPassword = HashPassword(password);
+            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                // VULNERABLE: Direct string concatenation - SQL Injection vulnerability
+                string query = "SELECT * FROM Users WHERE Username = '" + username + "' AND PasswordHash = '" + hashedPassword + "'";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.Read())
+                        {
+                            return new User
+                            {
+                                UserID = Convert.ToInt32(reader["UserID"]),
+                                Username = reader["Username"].ToString(),
+                                PasswordHash = reader["PasswordHash"].ToString(),
+                                IsAdmin = Convert.ToBoolean(reader["IsAdmin"]),
+                                Email = reader["Email"].ToString(),
+                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // VULNERABLE METHOD 2: Using stored procedure with dynamic SQL
+        public async Task<User> AuthenticateWithStoredProcedureAsync(string username, string password)
+        {
+            if (string.IsNullOrEmpty(username))
+                return null;
+
+            string hashedPassword = HashPassword(password);
+            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                // This is assuming a stored procedure called "sp_AuthenticateUser"
+                using (SqlCommand command = new SqlCommand("EXECUTE('SELECT * FROM Users WHERE Username = ''''' + @Username + ''''' AND PasswordHash = ''''' + @PasswordHash + '''''');", connection))
+                {
+                    // VULNERABLE: Parameters without proper escaping 
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@PasswordHash", hashedPassword);
+
+                    connection.Open();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.Read())
+                        {
+                            return new User
+                            {
+                                UserID = Convert.ToInt32(reader["UserID"]),
+                                Username = reader["Username"].ToString(),
+                                PasswordHash = reader["PasswordHash"].ToString(),
+                                IsAdmin = Convert.ToBoolean(reader["IsAdmin"]),
+                                Email = reader["Email"].ToString(),
+                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // Get all users including their credit card information
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _context.Users
+                .Include(u => u.CreditCard)
+                .ToListAsync();
+        }
+
+        // Get all credit cards
+        public async Task<IEnumerable<CreditCard>> GetAllCreditCardsAsync()
+        {
+            return await _context.CreditCards.ToListAsync();
+        }
+
+        // Existing methods from your original UserService
         public async Task<bool> RegisterUserAsync(RegisterViewModel model)
         {
             if (await _context.Users.AnyAsync(u => u.Username == model.Username))
@@ -54,6 +153,7 @@ namespace data_security.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
         public async Task<bool> VerifyUserEmailAsync(string username, string email)
         {
             return await _context.Users.AnyAsync(u => u.Username == username && u.Email == email);
@@ -79,7 +179,9 @@ namespace data_security.Services
 
         public async Task<User> GetUserByIdAsync(int userId)
         {
-            return await _context.Users.FindAsync(userId);
+            return await _context.Users
+                .Include(u => u.CreditCard)
+                .FirstOrDefaultAsync(u => u.UserID == userId);
         }
 
         public async Task<bool> IsAdminAsync(int userId)

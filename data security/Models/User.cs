@@ -12,7 +12,7 @@ namespace data_security.Models
         public string Username { get; set; }
 
         [Required]
-        [StringLength(64)] 
+        [StringLength(64)]
         public string PasswordHash { get; set; }
 
         [Required]
@@ -23,5 +23,8 @@ namespace data_security.Models
         public string Email { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        // Navigation property for credit card
+        public virtual CreditCard CreditCard { get; set; }
     }
 }
