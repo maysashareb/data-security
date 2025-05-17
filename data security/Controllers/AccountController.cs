@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using data_security.Data;
 using data_security.Models;
@@ -35,13 +36,18 @@ namespace data_security.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            User user = null;
+            //  validation block
+            if (!IsValidInput(model.Username) || !IsValidInput(model.Password))
+            {
+                ModelState.AddModelError(string.Empty, "Invalid input detected");
+                return View(model);
+            }
 
+            User user = null;
             try
             {
-                // First attempt: SQL Injection vulnerable query
-                string query = $"SELECT * FROM Users WHERE Username = '{model.Username}' AND PasswordHash = '{model.Password}'";
-                user = await _context.Users.FromSqlRaw(query).FirstOrDefaultAsync();
+                user = await _context.Users
+                   .FirstOrDefaultAsync(u => u.Username == model.Username);
 
                 if (user == null)
                 {
@@ -50,14 +56,12 @@ namespace data_security.Controllers
                     var passwordHash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
 
                     user = await _context.Users
-                        .FirstOrDefaultAsync(u => u.Username == model.Username && u.PasswordHash == passwordHash);
+                          .FirstOrDefaultAsync(u => u.Username == model.Username && u.PasswordHash == passwordHash);
                 }
             }
             catch (Exception ex)
             {
-                // Log the error but don't show it to the user
                 Console.WriteLine($"SQL Error: {ex.Message}");
-                // Try normal login as fallback
                 using var sha256 = System.Security.Cryptography.SHA256.Create();
                 var hashedBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(model.Password));
                 var passwordHash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
@@ -91,6 +95,42 @@ namespace data_security.Controllers
                 authProperties);
 
             return RedirectToAction("Index", user.IsAdmin ? "Admin" : "Home");
+        }
+
+
+
+        private bool IsValidInput(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return false;
+
+            // Check for common SQL injection patterns
+            string[] sqlPatterns = {
+        "--", ";", "/*", "*/", "@@", "@", "char", "nchar",
+        "varchar", "nvarchar", "alter", "begin", "cast", "create",
+        "cursor", "declare", "delete", "drop", "end", "exec",
+        "execute", "fetch", "insert", "kill", "select", "sys",
+        "sysobjects", "syscolumns", "table", "update", "xp_"
+    };
+
+            string sanitizedInput = input.ToLower();
+
+            foreach (var pattern in sqlPatterns)
+            {
+                if (sanitizedInput.Contains(pattern))
+                {
+                    return false;
+                }
+            }
+
+            // Additional check for SQL injection using regular expressions
+            var sqlInjectionPattern = @"(\s|'|""|=|<|>|!|\(|\)|;|--|\+|,|\|)";
+            if (Regex.IsMatch(input, sqlInjectionPattern))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         [HttpGet]

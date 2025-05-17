@@ -38,7 +38,6 @@ namespace data_security.Models
         [ForeignKey("User")]
         public int UserId { get; set; }
 
-        // Navigation property
         public virtual User User { get; set; }
     }
 }
